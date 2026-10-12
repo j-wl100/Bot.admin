@@ -1,4 +1,3 @@
-
 import os
 import time
 import threading
@@ -7,16 +6,14 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, ChatPermissions
 
-# Si estás en celular (Termux/Pydroid) y no usas variables de entorno,
-# puedes pegar tu token directamente entre las comillas de abajo:
 TOKEN = os.environ.get('ADMIN_TOKEN') or os.environ.get('TELEGRAM_TOKEN') or "TU_TOKEN_AQUI"
 
 if TOKEN == "TU_TOKEN_AQUI" or not TOKEN:
-    print("❌ ERROR: Debes colocar tu token de Telegram en la variable TOKEN.")
+    print("❌ ERROR: Debes colocar tu token de Telegram en la variable ADMIN_TOKEN.")
     exit(1)
 
 bot = telebot.TeleBot(TOKEN)
-print("SPYCT.ADMIN.BOT encendido y operativo...")
+print("SPYCT.ADMIN.BOT encendido y operativo en la red...")
 
 # Bases de datos en memoria
 grupos_config = {}
@@ -46,7 +43,7 @@ def verificar_permisos_admin(chat_id, user_id):
 
 
 # ==========================================
-# COMANDOS DE ADMINISTRACIÓN
+# COMANDOS DE ADMINISTRACIÓN MINIMALISTAS
 # ==========================================
 
 @bot.message_handler(commands=['ban'])
@@ -60,9 +57,9 @@ def cmd_ban(message):
 
     try:
         bot.ban_chat_member(message.chat.id, message.reply_to_message.from_user.id)
-        bot.send_message(message.chat.id, "𝖲𝖸𝖲.𝗔𝗗𝗠𝗜𝗡 ︱ Usuario sancionado y baneado del grupo.")
+        bot.send_message(message.chat.id, "𝖲𝖸𝖲.𝗔𝗗𝗠𝗜𝗡 ︱ Usuario sancionado.")
     except Exception:
-        bot.send_message(message.chat.id, "𝖲𝖸𝖲.𝗘𝗥𝗥𝗢𝗥 ︱ El bot requiere privilegios de administrador.")
+        bot.send_message(message.chat.id, "𝖲𝖸𝖲.𝗘𝗥𝗥𝗢𝗥 ︱ Sin permisos suficientes.")
 
 @bot.message_handler(commands=['onlyadminon'])
 def cmd_onlyadminon(message):
@@ -73,9 +70,9 @@ def cmd_onlyadminon(message):
     get_grupo_config(message.chat.id)['onlyadmin'] = True
     try:
         bot.set_chat_permissions(message.chat.id, ChatPermissions(can_send_messages=False))
-        bot.send_message(message.chat.id, "𝖲𝖸𝖲.𝗔𝗗𝗠𝗜𝗡 ︱ Modo Administradores activado. Miembros silenciados.")
+        bot.send_message(message.chat.id, "𝖲𝖸𝖲.𝗔𝗗𝗠𝗜𝗡 ︱ Modo Administradores activado.")
     except Exception:
-        bot.send_message(message.chat.id, "𝖲𝖸𝖲.𝗘𝗥𝗥𝗢𝗥 ︱ Permisos insuficientes.")
+        bot.send_message(message.chat.id, "𝖲𝖸𝖲.𝗘𝗥𝗥𝗢𝗥 ︱ Requiere permisos de admin.")
 
 @bot.message_handler(commands=['onlyadminoff'])
 def cmd_onlyadminoff(message):
@@ -88,9 +85,9 @@ def cmd_onlyadminoff(message):
         bot.set_chat_permissions(message.chat.id, ChatPermissions(
             can_send_messages=True, can_send_media_messages=True, can_send_other_messages=True, can_add_web_page_previews=True
         ))
-        bot.send_message(message.chat.id, "𝖲𝖸𝖲.𝗔𝗗𝗠𝗜𝗡 ︱ Modo Administradores desactivado. Chat abierto.")
+        bot.send_message(message.chat.id, "𝖲𝖸𝖲.𝗔𝗗𝗠𝗜𝗡 ︱ Modo Administradores desactivado.")
     except Exception:
-        bot.send_message(message.chat.id, "𝖲𝖸𝖲.𝗘𝗥𝗥𝗢𝗥 ︱ Permisos insuficientes.")
+        bot.send_message(message.chat.id, "𝖲𝖸𝖲.𝗘𝗥𝗥𝗢𝗥 ︱ Requiere permisos de admin.")
 
 @bot.message_handler(commands=['warn'])
 def cmd_warn(message):
@@ -99,7 +96,7 @@ def cmd_warn(message):
     if not verificar_permisos_admin(message.chat.id, message.from_user.id):
         return
     if not message.reply_to_message:
-        return bot.send_message(message.chat.id, "𝖲𝖸𝖲.𝗔𝗗𝗠𝗜𝗡 ︱ Responde al usuario a advertir.")
+        return bot.send_message(message.chat.id, "𝖲𝖸𝖲.𝗔𝗗𝗠𝗜𝗡 ︱ Responde al usuario.")
 
     user_id = message.reply_to_message.from_user.id
     parts = message.text.split(maxsplit=1)
@@ -110,12 +107,12 @@ def cmd_warn(message):
         cfg['warns_usuarios'][user_id] = 0
     cfg['warns_usuarios'][user_id] += 1
 
-    bot.send_message(message.chat.id, f"𝖲𝖸𝖲.𝗔𝗗𝗠𝗜𝗡 ︱ Advertencia ({cfg['warns_usuarios'][user_id]}/3)\n︱ Razón: {razon}")
+    bot.send_message(message.chat.id, f"𝖲𝖸𝖲.𝗔𝗗𝗠𝗜𝗡 ︱ Advertencia ({cfg['warns_usuarios'][user_id]}/3) ︱ Razón: {razon}")
 
     if cfg['warns_usuarios'][user_id] >= 3:
         try:
             bot.ban_chat_member(message.chat.id, user_id)
-            bot.send_message(message.chat.id, "𝖲𝖸𝖲.𝗔𝗗𝗠𝗜𝗡 ︱ Límite de 3 advertencias alcanzado. Usuario baneado.")
+            bot.send_message(message.chat.id, "𝖲𝖸𝖲.𝗔𝗗𝗠𝗜𝗡 ︱ Límite de advertencias alcanzado. Baneado.")
             cfg['warns_usuarios'][user_id] = 0
         except Exception:
             pass
@@ -130,7 +127,7 @@ def cmd_unwarn(message):
         return bot.send_message(message.chat.id, "𝖲𝖸𝖲.𝗔𝗗𝗠𝗜𝗡 ︱ Responde al usuario.")
 
     get_grupo_config(message.chat.id)['warns_usuarios'][message.reply_to_message.from_user.id] = 0
-    bot.send_message(message.chat.id, "𝖲𝖸𝖲.𝗔𝗗𝗠𝗜𝗡 ︱ Advertencias reiniciadas a 0.")
+    bot.send_message(message.chat.id, "𝖲𝖸𝖲.𝗔𝗗𝗠𝗜𝗡 ︱ Advertencias reiniciadas.")
 
 @bot.message_handler(commands=['cerrar'])
 def cmd_cerrar(message):
@@ -140,9 +137,9 @@ def cmd_cerrar(message):
         return
     try:
         bot.set_chat_permissions(message.chat.id, ChatPermissions(can_send_messages=False))
-        bot.send_message(message.chat.id, "𝖲𝖸𝖲.𝗔𝗗𝗠𝗜𝗡 ︱ Chat cerrado temporalmente.")
+        bot.send_message(message.chat.id, "𝖲𝖸𝖲.𝗔𝗗𝗠𝗜𝗡 ︱ Chat cerrado.")
     except Exception:
-        bot.send_message(message.chat.id, "𝖲𝖸𝖲.𝗘𝗥𝗥𝗢𝗥")
+        bot.send_message(message.chat.id, "𝖲𝖸𝖲.𝗘𝗥𝗥𝗢𝗥 ︱ Sin permisos.")
 
 @bot.message_handler(commands=['abrir'])
 def cmd_abrir(message):
@@ -156,7 +153,7 @@ def cmd_abrir(message):
         ))
         bot.send_message(message.chat.id, "𝖲𝖸𝖲.𝗔𝗗𝗠𝗜𝗡 ︱ Chat abierto.")
     except Exception:
-        bot.send_message(message.chat.id, "𝖲𝖸𝖲.𝗘𝗥𝗥𝗢𝗥")
+        bot.send_message(message.chat.id, "𝖲𝖸𝖲.𝗘𝗥𝗥𝗢𝗥 ︱ Sin permisos.")
 
 @bot.message_handler(commands=['antispam'])
 def cmd_antispam(message):
@@ -220,8 +217,8 @@ def cmd_chatreset(message):
         return
     
     markup = InlineKeyboardMarkup()
-    markup.add(InlineKeyboardButton("Ejecutar limpieza de chat", callback_data="ejecutar_chatreset"))
-    bot.send_message(message.chat.id, "𝖲𝖸𝖲.𝗖𝗟𝗘𝗔𝗡 ︱ Confirmar purga del búfer reciente", reply_markup=markup)
+    markup.add(InlineKeyboardButton("Vaciar buffer reciente", callback_data="ejecutar_chatreset"))
+    bot.send_message(message.chat.id, "𝖲𝖸𝖲.𝗖𝗟𝗘𝗔𝗡 ︱ Limpieza de registro requerida", reply_markup=markup)
 
 @bot.callback_query_handler(func=lambda call: call.data == "ejecutar_chatreset")
 def callback_chatreset(call):
@@ -236,9 +233,9 @@ def callback_chatreset(call):
                 bot.delete_message(msg.chat.id, current_id - i)
             except Exception:
                 pass
-        bot.answer_callback_query(call.id, "Búfer purgado con éxito.")
+        bot.answer_callback_query(call.id, "Chat purgado.")
     except Exception:
-        bot.answer_callback_query(call.id, "Error al purgar mensajes.", show_alert=True)
+        bot.answer_callback_query(call.id, "Error en purga.", show_alert=True)
 
 @bot.message_handler(commands=['config'])
 def cmd_config(message):
@@ -265,7 +262,7 @@ def cmd_addadmin(message):
         return bot.send_message(message.chat.id, "𝖲𝖸𝖲.𝗔𝗗𝗠𝗜𝗡 ︱ Responde al usuario.")
     
     get_grupo_config(message.chat.id)['admins_custom'].add(message.reply_to_message.from_user.id)
-    bot.send_message(message.chat.id, "𝖲𝖸𝖲.𝗔𝗗𝗠𝗜𝗡 ︱ Rango administrativo custom otorgado.")
+    bot.send_message(message.chat.id, "𝖲𝖸𝖲.𝗔𝗗𝗠𝗜𝗡 ︱ Rango administrativo otorgado.")
 
 @bot.message_handler(commands=['deladmin'])
 def cmd_deladmin(message):
@@ -277,14 +274,14 @@ def cmd_deladmin(message):
         return bot.send_message(message.chat.id, "𝖲𝖸𝖲.𝗔𝗗𝗠𝗜𝗡 ︱ Responde al usuario.")
     
     get_grupo_config(message.chat.id)['admins_custom'].discard(message.reply_to_message.from_user.id)
-    bot.send_message(message.chat.id, "𝖲𝖸𝖲.𝗔𝗗𝗠𝗜𝗡 ︱ Rango administrativo custom removido.")
+    bot.send_message(message.chat.id, "𝖲𝖸𝖲.𝗔𝗗𝗠𝗜𝗡 ︱ Rango administrativo removido.")
 
 @bot.message_handler(commands=['ping'])
 def cmd_ping(message):
     inicio = time.time() * 1000
-    sent = bot.send_message(message.chat.id, "𝖲𝖸𝖲.𝗣𝗜𝗡𝗚 ︱ Evaluando...")
+    sent = bot.send_message(message.chat.id, "𝖲𝖸𝖲.𝗣𝗜𝗡𝗚 ︱ Midiendo...")
     latencia = int((time.time() * 1000) - inicio)
-    bot.edit_message_text(f"𝖲𝖸𝖲.𝗣𝗜𝗡𝗚 ︱ Admin Pong :: {latencia} ms", chat_id=message.chat.id, message_id=sent.message_id)
+    bot.edit_message_text(f"𝖲𝖸𝖲.𝗣𝗜𝗡𝗚 ︱ Pong :: {latencia} ms", chat_id=message.chat.id, message_id=sent.message_id)
 
 
 # ==========================================
@@ -345,7 +342,7 @@ def security_filter(message):
 
 
 # ==========================================
-# SERVIDOR WEB (Servidores / Cloud)
+# SERVIDOR WEB PARA RENDER
 # ==========================================
 class SimpleHandler(BaseHTTPRequestHandler):
     def do_GET(self):
