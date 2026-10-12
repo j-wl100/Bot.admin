@@ -43,6 +43,52 @@ def verificar_permisos_admin(chat_id, user_id):
 
 
 # ==========================================
+# MENÚ DE ADMINISTRACIÓN
+# ==========================================
+
+@bot.message_handler(commands=['menu'])
+def cmd_menu(message):
+    if message.chat.type == 'private':
+        return
+    
+    menu_texto = """𓄧 𖫰     ֺ   𓄧 𖫰      ֺ   𓄧 𖫰      ֺ   𓄧 𖫰      ֺ   𓄧 
+
+「​㋳」ㅤ𝗦𝗣𝖸Ɔ𝖳-𝗔𝗗𝗠𝗜𝗡,  𝖠𝗊𝗎𝗂 𝗍𝗂𝖾𝗇𝖾𝗌 𝗅𝖺 𝗅𝗂𝗌𝗍𝖺 𝖽𝖾 𝖼𝗈𝗆𝖺𝗇𝖽𝗈𝗌 𝖽𝖾 ᴍᴏᴅᴇʀᴀᴄɪóɴ.
+
+⸻   ֺ   𖫰    !  🔗  ! 𖫰      ֺ   ⸻
+
+#▋         𝗖𝗼𝗺𝗮𝗻𝗱𝗼𝘀.𝗔𝗗𝗠𝗜𝗡       _!?    
+
+%─────────────────
+ 
+   ●   𝖲𝖸𝖲.𝗠𝗢𝗗𝗘𝗥𝗔𝗖𝗜𝗢́𝗡  ⟍  ™
+
+─────────────────
+
+/ban @user
+/warn @user [razón]
+/unwarn @user
+/cerrar
+/abrir
+/onlyadminon
+/onlyadminoff
+/antispam 
+/antispamoff
+/antinsfwon
+/antinsfwoff
+/antilinkon
+/antilinkoff
+/chatreset
+/config 
+/addadmin @user
+/deladmin @user
+/ping
+
+─────────────────────┘"""
+    bot.send_message(message.chat.id, menu_texto)
+
+
+# ==========================================
 # COMANDOS DE ADMINISTRACIÓN MINIMALISTAS
 # ==========================================
 
