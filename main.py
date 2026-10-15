@@ -6,7 +6,7 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, ChatPermissions
 
-TOKEN = os.environ.get('ADMIN_TOKEN') or os.environ.get('TELEGRAM_TOKEN') or "TU_TOKEN_AQUI"
+TOKEN = os.environ.get('ADMIN_TOKEN') or os.environ.get('TELEGRAM_TOKEN') or os.environ.get('TELEGRAM_BOT_TOKEN') or "TU_TOKEN_AQUI"
 
 if TOKEN == "TU_TOKEN_AQUI" or not TOKEN:
     print("❌ ERROR: Debes colocar tu token de Telegram en la variable ADMIN_TOKEN.")
