@@ -6,11 +6,11 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 import telebot
 from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, ChatPermissions
 
+# Obtener Token desde variables de entorno de Render
 TOKEN = os.environ.get('ADMIN_TOKEN') or os.environ.get('TELEGRAM_TOKEN') or os.environ.get('TELEGRAM_BOT_TOKEN') or "TU_TOKEN_AQUI"
 
-
 if TOKEN == "TU_TOKEN_AQUI" or not TOKEN:
-    print("❌ ERROR: Debes colocar tu token de Telegram en la variable ADMIN_TOKEN.")
+    print("❌ ERROR: Debes colocar tu token de Telegram en la variable TELEGRAM_BOT_TOKEN o ADMIN_TOKEN.")
     exit(1)
 
 bot = telebot.TeleBot(TOKEN)
@@ -401,31 +401,14 @@ class SimpleHandler(BaseHTTPRequestHandler):
         pass
 
 def run_server():
-    port = int(os.environ.get('PORT', 3001))
-    try:
-        server = HTTPServer(('0.0.0.0', port), SimpleHandler)
-        server.serve_forever()
-    except Exception:
-        pass
-
-# ==========================================
-# SERVIDOR WEB PARA RENDER
-# ==========================================
-class SimpleHandler(BaseHTTPRequestHandler):
-    def do_GET(self):
-        self.send_response(200)
-        self.send_header('Content-Type', 'text/plain')
-        self.end_headers()
-        self.wfile.write(b'SPYCT.ADMIN.BOT operativo.\n')
-    def log_message(self, format, *args):
-        pass
-
-def run_server():
     port = int(os.environ.get('PORT', 10000))
     print(f"🌐 Intentando levantar servidor web en el puerto {port}...")
-    server = HTTPServer(('0.0.0.0', port), SimpleHandler)
-    print(f"✅ Servidor web escuchando en el puerto {port}")
-    server.serve_forever()
+    try:
+        server = HTTPServer(('0.0.0.0', port), SimpleHandler)
+        print(f"✅ Servidor web escuchando en el puerto {port}")
+        server.serve_forever()
+    except Exception as e:
+        print(f"⚠️ Error al iniciar servidor web: {e}")
 
 if __name__ == '__main__':
     # Iniciar servidor web en segundo plano para Render
@@ -434,7 +417,3 @@ if __name__ == '__main__':
     # Iniciar el bot de Telegram
     print("🤖 Iniciando polling de Telegram...")
     bot.infinity_polling(skip_pending=True, timeout=20)
-
-    threading.Thread(target=run_server, daemon=True).start()
-    bot.infinity_polling(skip_pending=True, timeout=20)
-
