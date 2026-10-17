@@ -52,7 +52,8 @@ def cmd_admin(message):
     if message.chat.type == 'private':
         return
     
-    menu_texto = """𓄧 𖫰     ֺ   𓄧 𖫰      ֺ   𓄧 𖫰  
+    menu_texto = """𓄧 𖫰     ֺ   𓄧 𖫰      ֺ   𓄧 𖫰      ֺ   𓄧 𖫰      ֺ   𓄧 
+
 %──────────────────────────
  
    ●   𝖲𝖸𝖲.𝗠𝗢𝗗𝗘𝗥𝗔𝗖𝗜𝗢́𝗡  ⟍  ™
