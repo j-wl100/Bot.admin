@@ -75,13 +75,13 @@ def cmd_menu_admin(message):
         bot.reply_to(message, "⚠️ Este comando solo funciona dentro de un grupo.")
         return
 
-    menu_texto = """𓄧 𖫰     ֺ   𓄧 𖫰      ֺ   𓄧 𖫰      ֺ   𓄧 𖫰      ֺ   𓄧 
+    menu_texto = """𓄧 𖫰     ֺ   𓄧 𖫰      ֺ   𓄧 𖫰      ֺ   𓄧 𖫰      ֺ  
 
-%──────────────────────────
+%───────────────────────
  
    ●   𝖲𝖸𝖲.𝗠𝗢𝗗𝗘𝗥𝗔𝗖𝗜𝗢́𝗡  ⟍  ™
 
-──────────────────────────�
+────────────────────────�
 
 /ban @user
 /warn @user [razón]
