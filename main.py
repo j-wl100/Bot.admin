@@ -47,18 +47,17 @@ def verificar_permisos_admin(chat_id, user_id):
 # MENÚ DE ADMINISTRACIÓN
 # ==========================================
 
-@bot.message_handler(commands=['admin'])
-def cmd_admin(message):
+@bot.message_handler(commands=['menu_admin'])
+def cmd_menu_admin(message):
     if message.chat.type == 'private':
         return
     
-    menu_texto = """𓄧 𖫰     ֺ   𓄧 𖫰      ֺ   𓄧 𖫰      ֺ   𓄧 𖫰      ֺ   𓄧 
-
+    menu_texto = """
 %──────────────────────────
  
    ●   𝖲𝖸𝖲.𝗠𝗢𝗗𝗘𝗥𝗔𝗖𝗜𝗢́𝗡  ⟍  ™
 
-───────────────────────────�
+──────────────────────────�
 
 /ban @user
 /warn @user [razón]
